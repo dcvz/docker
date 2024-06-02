@@ -36,9 +36,9 @@ cd "${TMP_DIR}"
 git clone https://github.com/Mr-Wiseguy/N64Recomp.git --recurse-submodules N64RecompSource
 cd N64RecompSource
 
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=g++-11 -DCMAKE_C_COMPILER=gcc-11 -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B cmake-build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=clang++-17 -DCMAKE_C_COMPILER=clang-17 -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B cmake-build -DCMAKE_CXX_FLAGS="-stdlib=libc++" -DCMAKE_EXE_LINKER_FLAGS="-stdlib=libc++"
 cmake --build cmake-build --config Release --target N64Recomp -j $(nproc)
 cmake --build cmake-build --config Release --target RSPRecomp -j $(nproc)
 
-sudo cp -v cmake-build/N64Recomp /usr/local/bin/
-sudo cp -v cmake-build/RSPRecomp /usr/local/bin/
+cp -v cmake-build/N64Recomp /usr/local/bin/
+cp -v cmake-build/RSPRecomp /usr/local/bin/

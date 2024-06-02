@@ -2,10 +2,10 @@
 
 set -e
 
-SDL2_VERSION=${1:-"none"}
+NINJA_VERSION=${1:-"none"}
 
-if [ "${SDL2_VERSION}" = "none" ]; then
-    echo "No SDL2 version specified, skipping SDL2 installation"
+if [ "${NINJA_VERSION}" = "none" ]; then
+    echo "No Ninja version specified, skipping Ninja installation"
     exit 0
 fi
 
@@ -21,7 +21,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "Installing CMake..."
+echo "Installing Ninja..."
 
 architecture=$(dpkg --print-architecture)
 case "${architecture}" in
@@ -35,20 +35,18 @@ case "${architecture}" in
         ;;
 esac
 
-TMP_DIR=$(mktemp -d -t sdl2-XXXXXXXXXX)
+TMP_DIR=$(mktemp -d -t ninja-XXXXXXXXXX)
 
 echo "${TMP_DIR}"
 cd "${TMP_DIR}"
 
-wget https://www.libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz
-tar -xzf SDL2-${SDL2_VERSION}.tar.gz
-cd SDL2-${SDL2_VERSION}
-./configure
-make -j $(nproc)
-make install
+# Download and install Ninja from source
+wget https://github.com/ninja-build/ninja/archive/v${NINJA_VERSION}.tar.gz -O ninja-${NINJA_VERSION}.tar.gz
+tar -xzf ninja-${NINJA_VERSION}.tar.gz
+cd ninja-${NINJA_VERSION}
+./configure.py --bootstrap
 
-if [ "$(uname -m)" == "x86_64" ]; then
-    cp -av /usr/local/lib/libSDL* /lib/x86_64-linux-gnu/
-else
-    cp -av /usr/local/lib/libSDL* /usr/lib/aarch64-linux-gnu/
-fi
+# Move the ninja executable to /usr/local/bin
+mv ninja /usr/local/bin/ninja
+
+echo "Ninja installation complete."

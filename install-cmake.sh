@@ -2,10 +2,10 @@
 
 set -e
 
-SDL2_VERSION=${1:-"none"}
+CMAKE_VERSION=${1:-"none"}
 
-if [ "${SDL2_VERSION}" = "none" ]; then
-    echo "No SDL2 version specified, skipping SDL2 installation"
+if [ "${CMAKE_VERSION}" = "none" ]; then
+    echo "No CMake version specified, skipping CMake installation"
     exit 0
 fi
 
@@ -35,20 +35,17 @@ case "${architecture}" in
         ;;
 esac
 
-TMP_DIR=$(mktemp -d -t sdl2-XXXXXXXXXX)
+TMP_DIR=$(mktemp -d -t cmake-XXXXXXXXXX)
 
 echo "${TMP_DIR}"
 cd "${TMP_DIR}"
 
-wget https://www.libsdl.org/release/SDL2-${SDL2_VERSION}.tar.gz
-tar -xzf SDL2-${SDL2_VERSION}.tar.gz
-cd SDL2-${SDL2_VERSION}
-./configure
-make -j $(nproc)
+# Download and install CMake from source
+wget https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz
+tar -xzf cmake-${CMAKE_VERSION}.tar.gz
+cd cmake-${CMAKE_VERSION}
+./bootstrap
+make -j$(nproc)
 make install
 
-if [ "$(uname -m)" == "x86_64" ]; then
-    cp -av /usr/local/lib/libSDL* /lib/x86_64-linux-gnu/
-else
-    cp -av /usr/local/lib/libSDL* /usr/lib/aarch64-linux-gnu/
-fi
+echo "CMake installation complete."

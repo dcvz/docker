@@ -1,8 +1,39 @@
-FROM mcr.microsoft.com/devcontainers/cpp:1-ubuntu-22.04
+FROM ubuntu:18.04
 
+
+# Setup LLVM 17 & Git PPA
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-  && apt-get -y install --no-install-recommends ninja-build libsdl2-dev libgtk-3-dev lld llvm clang-15 libfuse2
+  && apt-get -y install --no-install-recommends software-properties-common wget gnupg \
+  && add-apt-repository -y ppa:ubuntu-toolchain-r/test \
+  && add-apt-repository -y ppa:git-core/candidate \
+  && echo "deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-17 main" | tee /etc/apt/sources.list.d/llvm.list \
+  && echo "deb-src http://apt.llvm.org/bionic/ llvm-toolchain-bionic-17 main" | tee -a /etc/apt/sources.list.d/llvm.list \
+  && wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add - \
+  && apt-get update
 
+# Install dependencies
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+  && apt-get -y install --no-install-recommends build-essential libsdl2-dev libgtk-3-dev lld llvm clang-17 libc++-17-dev libc++abi-17-dev libfuse2 libssl-dev git
+
+# Install CMake
+ARG INSTALL_CMAKE_VERSION="3.29.3"
+
+COPY ./install-cmake.sh /tmp/
+RUN if [ "${INSTALL_CMAKE_VERSION}" != "none" ]; then \
+  chmod +x /tmp/install-cmake.sh && /tmp/install-cmake.sh ${INSTALL_CMAKE_VERSION}; \
+  fi \
+  && rm -f /tmp/install-cmake.sh
+
+# Install Ninja
+ARG INSTALL_NINJA_VERSION="1.12.1"
+
+COPY ./install-ninja.sh /tmp/
+RUN if [ "${INSTALL_NINJA_VERSION}" != "none" ]; then \
+  chmod +x /tmp/install-ninja.sh && /tmp/install-ninja.sh ${INSTALL_NINJA_VERSION}; \
+  fi \
+  && rm -f /tmp/install-ninja.sh
+
+# Install SDL2
 ARG INSTALL_SDL2_VERSION_FROM_SOURCE="2.30.3"
 
 COPY ./install-sdl2.sh /tmp/
@@ -11,8 +42,16 @@ RUN if [ "${INSTALL_SDL2_VERSION_FROM_SOURCE}" != "none" ]; then \
   fi \
   && rm -f /tmp/install-sdl2.sh
 
+# Install DXC
+ARG INSTALL_DXC_VERSION="1.8.2405"
+
+COPY ./install-dxc.sh /tmp/
+RUN if [ "${INSTALL_DXC_VERSION}" != "none" ]; then \
+  chmod +x /tmp/install-dxc.sh && /tmp/install-dxc.sh ${INSTALL_DXC_VERSION}; \
+  fi \
+  && rm -f /tmp/install-dxc.sh
+
+# Install N64Recomp
 COPY ./install-n64recomp.sh /tmp/
 RUN chmod +x /tmp/install-n64recomp.sh && /tmp/install-n64recomp.sh
 RUN rm -f /tmp/install-n64recomp.sh
-
-RUN curl -Ssf https://pkgx.sh | sh
