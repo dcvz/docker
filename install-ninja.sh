@@ -49,4 +49,4 @@ cd ninja-${NINJA_VERSION}
 # Move the ninja executable to /usr/local/bin
 mv ninja /usr/local/bin/ninja
 
-echo "Ninja installation complete."
+echo "Ninja installed successfully."

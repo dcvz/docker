@@ -48,4 +48,4 @@ cd cmake-${CMAKE_VERSION}
 make -j$(nproc)
 make install
 
-echo "CMake installation complete."
+echo "CMake installed successfully."

@@ -52,3 +52,5 @@ if [ "$(uname -m)" == "x86_64" ]; then
 else
     cp -av /usr/local/lib/libSDL* /usr/lib/aarch64-linux-gnu/
 fi
+
+echo "SDL2 installed successfully."

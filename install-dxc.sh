@@ -47,5 +47,5 @@ ninja
 cp -r bin/* "/usr/local/bin/"
 cp -r lib/* "/usr/local/lib/"
 
-echo "DXC installation complete."
+echo "DXC installed successfully."
  
