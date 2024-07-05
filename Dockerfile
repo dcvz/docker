@@ -13,7 +13,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 
 # Install dependencies
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-  && apt-get -y install --no-install-recommends build-essential libsdl2-dev libgtk-3-dev lld llvm clang-17 libc++-17-dev libc++abi-17-dev libfuse2 libssl-dev git
+  && apt-get -y install --no-install-recommends build-essential libsdl2-dev libgtk-3-dev lld llvm clang-17 libfuse2 libssl-dev git unzip llvm-17 llvm-17-tools lld-17 curl file g++-11 libstdc++-11-dev
 
 # Install CMake
 ARG INSTALL_CMAKE_VERSION="3.29.3"
@@ -50,8 +50,3 @@ RUN if [ "${INSTALL_DXC_VERSION}" != "none" ]; then \
   chmod +x /tmp/install-dxc.sh && /tmp/install-dxc.sh ${INSTALL_DXC_VERSION}; \
   fi \
   && rm -f /tmp/install-dxc.sh
-
-# Install N64Recomp
-COPY ./install-n64recomp.sh /tmp/
-RUN chmod +x /tmp/install-n64recomp.sh && /tmp/install-n64recomp.sh
-RUN rm -f /tmp/install-n64recomp.sh
