@@ -13,16 +13,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 
 # Install dependencies
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-  && apt-get -y install --no-install-recommends build-essential libsdl2-dev libgtk-3-dev lld llvm clang-17 libfuse2 libssl-dev git unzip llvm-17 llvm-17-tools lld-17 curl file g++-11 libstdc++-11-dev gawk patchelf bison
-
-# Install Node
-ARG INSTALL_NODE_VERSION="20"
-
-COPY ./install-node.sh /tmp/
-RUN if [ "${INSTALL_NODE_VERSION}" != "none" ]; then \
-  chmod +x /tmp/install-node.sh && /tmp/install-node.sh ${INSTALL_NODE_VERSION}; \
-  fi \
-  && rm -f /tmp/install-node.sh
+  && apt-get -y install --no-install-recommends build-essential libsdl2-dev libgtk-3-dev lld llvm clang-17 libfuse2 libssl-dev git unzip llvm-17 llvm-17-tools lld-17 curl file g++-11 libstdc++-11-dev
 
 # Install CMake
 ARG INSTALL_CMAKE_VERSION="3.29.3"
